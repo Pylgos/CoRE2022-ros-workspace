@@ -13,5 +13,11 @@ in
     pkgs = with rosPkgs; [
       desktop
     ];
+    shellHook = ''
+      set +u
+      alias rosbuild='colcon build --symlink-install'
+      alias rosup='source install/local_setup.bash'
+    '';
+
   };
 }
