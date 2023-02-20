@@ -1,5 +1,8 @@
 .std
 
+.vscode
+
 build
 install
 log
+
