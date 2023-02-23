@@ -51,8 +51,8 @@ struct CameraAngleMsg {
 ```
 
 ### マイコンからPCに送信するメッセージ
-発射・装填機構の情報を表すメッセージ
 * ID: 22 launcher_info
+発射・装填機構の情報を表すメッセージ
 ```c++
 struct LauncherInfoMsg {
   uint8_t ammo; // 残弾数
