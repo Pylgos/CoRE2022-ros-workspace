@@ -151,8 +151,8 @@ public:
 
       const Vector3 angle = camera_angle_watcher_->get_value();
       CameraAngleMsg msg;
-      msg.pitch = angle.x * 1000;
-      msg.yaw = angle.y * 1000;
+      msg.pitch = angle.y * 1000;
+      msg.yaw = angle.z * 1000;
       memcpy(frame.data, &msg, sizeof(msg));
 
       int ret = write(sock_, &frame, sizeof(frame));
