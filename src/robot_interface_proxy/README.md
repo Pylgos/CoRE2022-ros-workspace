@@ -1,5 +1,5 @@
 # robot_interface_proxy
-ROSとマイコン間の中継をするパッケージ
+ROSとマイコン間の通信を中継するためのパッケージ
 
 ## ROS Interfaces
 #### Publish
