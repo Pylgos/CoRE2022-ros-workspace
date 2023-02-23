@@ -4,7 +4,7 @@
 let
   ros2nix = inputs.ros2nix;
   rosPkgs = ros2nix.legacyPackages.humble;
-  nixpkgs = inputs.nixpkgs.legacyPackages;
+  nixpkgs = inputs.nixpkgs;
   l = inputs.nixpkgs.lib // builtins;
 in
 {
@@ -14,8 +14,9 @@ in
     ];
     shellHook = ''
       set +u
-      alias rosbuild='colcon build --symlink-install'
-      alias rosup='source install/local_setup.bash'
+      alias bld='colcon build'
+      alias setup='source install/local_setup.bash'
     '';
+    COLCON_DEFAULTS_FILE = ./defaults.yaml;
   };
 }

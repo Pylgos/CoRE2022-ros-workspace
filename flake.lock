@@ -436,6 +436,7 @@
           "nixpkgs"
         ],
         "ros2nix": "ros2nix",
+        "socketcan-cpp-src": "socketcan-cpp-src",
         "std": "std_2"
       }
     },
@@ -456,6 +457,22 @@
       "original": {
         "owner": "Pylgos",
         "repo": "ros2nix",
+        "type": "github"
+      }
+    },
+    "socketcan-cpp-src": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1623679695,
+        "narHash": "sha256-T+eeipCqwIFA6oswPZLXPMvRjEHCB7hHjEln/19KSns=",
+        "owner": "siposcsaba89",
+        "repo": "socketcan-cpp",
+        "rev": "5e328b7afe70b359a06f340ac7240ae36a544f5c",
+        "type": "github"
+      },
+      "original": {
+        "owner": "siposcsaba89",
+        "repo": "socketcan-cpp",
         "type": "github"
       }
     },

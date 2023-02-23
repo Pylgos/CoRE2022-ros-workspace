@@ -6,6 +6,8 @@
     nixpkgs.follows = "ros2nix/nixpkgs";
     std.url = "github:divnix/std";
     std.inputs.nixpkgs.follows = "nixpkgs";
+    socketcan-cpp-src.url = "github:siposcsaba89/socketcan-cpp";
+    socketcan-cpp-src.flake = false;
   };
 
   outputs = {self, std, ...} @ inputs:
