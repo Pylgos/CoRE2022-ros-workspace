@@ -26,11 +26,11 @@ ROSとマイコン間の中継をするパッケージ
 
 数値はすべてリトルエンディアンである。
 すべてのメッセージは標準フレームフォーマットで送受信される。
-
+`target_velocity`はマイコンが直接コントローラと通信する（ROSを経由して操作しない）場合、無視する。
 
 ### PCからマイコンに送信するメッセージ
-* ID: 20 target_velocity
-ロボットの移動する目標速度を表すメッセージ
+* ID: 20 target_velocity  
+ロボットの移動する目標速度を表すメッセージ  
 ```c++
 struct TargetVelocityMsg {
   int16_t vx; // 前後方向の速度[m/s] * 1000 前が+　後ろが-
@@ -40,7 +40,7 @@ struct TargetVelocityMsg {
 // 例: 前に1[m/s]、右に1[m/s]、右旋回1[rad/s]とき、vx==1000, vy==-1000, ang_vel==-1000
 ```
 
-* ID: 21 camera_angle
+* ID: 21 camera_angle  
 カメラを向ける角度を表すメッセージ
 ```c++
 struct CameraAngleMsg {
@@ -51,7 +51,7 @@ struct CameraAngleMsg {
 ```
 
 ### マイコンからPCに送信するメッセージ
-* ID: 22 launcher_info
+* ID: 22 launcher_info  
 発射・装填機構の情報を表すメッセージ
 ```c++
 struct LauncherInfoMsg {
