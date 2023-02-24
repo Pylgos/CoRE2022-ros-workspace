@@ -16,25 +16,35 @@ template<class T>
 class VariableWatcher {
 public:
   VariableWatcher(rclcpp::Duration timeout, rclcpp::Clock::SharedPtr clock)
-    : clock_{clock}, timeout_{timeout} {};
+    : clock_{clock}, timeout_{timeout}, has_changed_{false} {};
 
   void feed(T v) {
-    prev_value = raw_value;
+    if (!raw_value.has_value() || raw_value != v) {
+      has_changed_ = true;
+    }
     raw_value = v;
-    last_update_ = clock_->now();
-  }
-
-  void feed() {
-    last_update_ = clock_->now();
   }
 
   bool is_timeout() {
-    if (!last_update_.has_value()) return true;
-    return clock_->now() > last_update_.value() + timeout_;
+    if (!last_update_.has_value()) {
+      return true;
+    }
+    if (clock_->now() > last_update_.value() + timeout_) {
+      return true;
+    }
+    return  false;
   }
 
   bool has_changed() {
-    return raw_value.has_value() && (!prev_value.has_value() || raw_value != prev_value.value());
+    return has_changed_;
+  }
+
+  void reset_changed_flag() {
+    has_changed_ = false;
+  }
+
+  void reset_timeout() {
+    last_update_ = clock_->now();
   }
 
   bool has_changed_or_timeout() {
@@ -46,11 +56,11 @@ public:
   const T& get_value() { return raw_value.value(); }
 
   std::optional<T> raw_value;
-  std::optional<T> prev_value;
 private:
   rclcpp::Clock::SharedPtr clock_;
   std::optional<rclcpp::Time> last_update_;
   rclcpp::Duration timeout_;
+  bool has_changed_;
 };
 
 
@@ -88,6 +98,8 @@ private:
   void write_callback();
 
   bool is_activated_ = false;
+
+  std::optional<rclcpp::Time> last_target_vel_received_;
 
   rclcpp::TimerBase::SharedPtr read_timer_, write_timer_;
 

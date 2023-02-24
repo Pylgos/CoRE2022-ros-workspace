@@ -43,7 +43,8 @@ CallbackReturn ProxyBase::on_configure(const State&) {
   if (success) {
     target_vel_watcher_ = std::make_unique<VariableWatcher<Twist>>(
       Duration::from_seconds(get_parameter("target_vel_expire_duration").as_double()), get_clock());
-    
+    target_vel_watcher_->raw_value = Twist();
+
     camera_angle_watcher_ = std::make_unique<VariableWatcher<Vector3>>(
       Duration::from_seconds(100000000), get_clock());
     
@@ -53,6 +54,7 @@ CallbackReturn ProxyBase::on_configure(const State&) {
 
     target_vel_sub_ = create_subscription<Twist>("target_vel", SystemDefaultsQoS(), [this](const Twist& target_vel){
       target_vel_watcher_->feed(target_vel);
+      last_target_vel_received_ = get_clock()->now();
     });
 
     camera_angle_sub_ = create_subscription<Vector3>("camera_angle", SystemDefaultsQoS(), [this](const Vector3& camera_angle){
@@ -76,7 +78,9 @@ CallbackReturn ProxyBase::on_configure(const State&) {
   }
 }
 
-CallbackReturn ProxyBase::on_activate(const State&) {
+CallbackReturn ProxyBase::on_activate(const State& state) {
+  LifecycleNode::on_activate(state);
+
   bool success = activate_interface();
   if (success) {
     is_activated_ = true;
@@ -88,7 +92,9 @@ CallbackReturn ProxyBase::on_activate(const State&) {
   }
 }
 
-CallbackReturn ProxyBase::on_deactivate(const State&) {
+CallbackReturn ProxyBase::on_deactivate(const State& state) {
+  LifecycleNode::on_deactivate(state);
+
   is_activated_ = false;
   bool success = deactivate_interface();
   if (success) {
@@ -136,6 +142,7 @@ CallbackReturn ProxyBase::on_shutdown(const State&) {
 void ProxyBase::read_callback() {
   if (!is_activated_) return;
 
+  ammo_watcher_->reset_changed_flag();
   bool success = read_interface();
 
   if (!success) {
@@ -144,7 +151,6 @@ void ProxyBase::read_callback() {
     return;
   }
 
-  // current_vel_pub_->publish(current_vel);
   if (ammo_watcher_->has_changed()) {
     ammo_pub_->publish(ammo_watcher_->get_value());
   }
@@ -155,9 +161,9 @@ void ProxyBase::write_callback() {
   if (!is_activated_) return;
 
   auto target_vel_expire_duration = Duration::from_seconds(get_parameter("target_vel_expire_duration").as_double());
-  if (target_vel_watcher_->is_timeout()) {
+  if (last_target_vel_received_.has_value() && get_clock()->now() > last_target_vel_received_.value() + target_vel_expire_duration) {
     RCLCPP_WARN(get_logger(), "target_vel topic have not been received for %.1lf seconds", target_vel_expire_duration.seconds());
-    target_vel_watcher_->raw_value = Twist();
+    target_vel_watcher_->feed(Twist());
   }
 
   bool success = write_interface();

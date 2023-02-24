@@ -124,6 +124,8 @@ public:
 
   bool write_interface() override {
     if (target_vel_watcher_->has_changed_or_timeout()) {
+      target_vel_watcher_->reset_timeout();
+      target_vel_watcher_->reset_changed_flag();
       struct can_frame frame;
       frame.can_id = get_parameter("target_vel_can_id").as_int();
       frame.len = 6;
@@ -145,6 +147,9 @@ public:
     }
 
     if (camera_angle_watcher_->has_changed_or_timeout()) {
+      camera_angle_watcher_->reset_timeout();
+      camera_angle_watcher_->reset_changed_flag();
+
       struct can_frame frame;
       frame.can_id = get_parameter("camera_angle_can_id").as_int();
       frame.len = 4;
