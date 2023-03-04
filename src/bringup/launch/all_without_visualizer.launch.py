@@ -11,4 +11,11 @@ def generate_launch_description():
                 {"serial_port_candidates": ["/dev/serial/by-id/usb-1a86_USB_Serial-if00-port0"]}
             ]
         ),
+        Node(
+            package="robot-interface_proxy",
+            executable="can_proxy",
+            name="can_proxy",
+            parameters=[
+            ]
+        )
     ])
