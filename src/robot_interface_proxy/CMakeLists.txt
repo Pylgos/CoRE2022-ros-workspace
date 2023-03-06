@@ -20,12 +20,9 @@ ament_auto_add_library(${PROJECT_NAME}
     src/proxy_base.cpp
 )
 
-
 ament_auto_add_executable(can_proxy
   src/can_proxy.cpp
 )
-
-target_link_libraries(can_proxy ::socketcan_cpp)
 
 
 ament_auto_package()
