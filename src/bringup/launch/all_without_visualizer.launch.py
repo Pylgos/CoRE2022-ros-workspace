@@ -12,7 +12,7 @@ def generate_launch_description():
             ]
         ),
         Node(
-            package="robot-interface_proxy",
+            package="robot_interface_proxy",
             executable="can_proxy",
             name="can_proxy",
             parameters=[
