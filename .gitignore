@@ -7,3 +7,5 @@ install
 log
 
 vgcore.*
+
+/sync.sh

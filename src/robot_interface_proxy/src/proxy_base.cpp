@@ -1,18 +1,20 @@
 #include "robot_interface_proxy/proxy_base.hpp"
 #include <geometry_msgs/msg/detail/vector3__struct.hpp>
+#include <memory>
 #include <rclcpp/qos.hpp>
+#include <std_srvs/srv/detail/set_bool__struct.hpp>
 
 
 using namespace std;
 using namespace std::chrono;
 using rclcpp_lifecycle::State;
 using CallbackReturn = rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn;
-using rclcpp::SensorDataQoS;
 using rclcpp::SystemDefaultsQoS;
 using rclcpp::Duration;
 using geometry_msgs::msg::Twist;
 using geometry_msgs::msg::Vector3;
 using std_msgs::msg::Int64;
+using std_srvs::srv::SetBool;
 
 
 namespace robot_interface_proxy {
@@ -51,6 +53,8 @@ CallbackReturn ProxyBase::on_configure(const State&) {
     ammo_watcher_ = std::make_unique<VariableWatcher<Int64>>(
       Duration::from_seconds(100000000), get_clock());
 
+    fire_command_watcher_ = std::make_unique<VariableWatcher<bool>>(100ms, get_clock());
+    fire_command_watcher_->raw_value = false;
 
     target_vel_sub_ = create_subscription<Twist>("target_vel", SystemDefaultsQoS(), [this](const Twist& target_vel){
       target_vel_watcher_->feed(target_vel);
@@ -68,7 +72,12 @@ CallbackReturn ProxyBase::on_configure(const State&) {
     read_timer_ = create_wall_timer(read_period, bind(&ProxyBase::read_callback, this));
 
     auto write_period = microseconds(static_cast<int64_t>(1e6 / get_parameter("write_rate").as_double()));
-    write_timer_ =create_wall_timer(write_period, bind(&ProxyBase::write_callback, this));
+    write_timer_ = create_wall_timer(write_period, bind(&ProxyBase::write_callback, this));
+
+    fire_command_service_ = create_service<SetBool>("set_fire", [this](const SetBool::Request::ConstSharedPtr req, const SetBool::Response::SharedPtr res) {
+      fire_command_watcher_->feed(req->data);
+      res->success = true;
+    });
 
     RCLCPP_INFO(get_logger(), "configuration success");
     return CallbackReturn::SUCCESS;

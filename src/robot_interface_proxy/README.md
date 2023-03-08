@@ -50,6 +50,13 @@ struct CameraAngleMsg {
 // 例: 上30[°], 左70[°]のとき、pitch == -30 / 180 * M_PI * 1000, yaw == 70 / 180 * M_PI * 1000
 ```
 
+* ID: 23 fire_command
+```c++
+struct FireCommandMsg {
+  bool enable; // 発射を行うかどうか trueなら発射する
+} __attribute__((packed));
+```
+
 ### マイコンからPCに送信するメッセージ
 * ID: 22 launcher_info  
 発射・装填機構の情報を表すメッセージ

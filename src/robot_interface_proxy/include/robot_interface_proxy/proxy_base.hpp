@@ -1,11 +1,15 @@
 
 #include <algorithm>
+#include <memory>
+#include <rclcpp/client.hpp>
 #include <rclcpp_lifecycle/lifecycle_node.hpp>
 #include <rclcpp/subscription.hpp>
 #include <rclcpp/publisher.hpp>
 #include <geometry_msgs/msg/twist.hpp>
 #include <geometry_msgs/msg/vector3.hpp>
 #include <std_msgs/msg/int64.hpp>
+#include <std_srvs/srv/detail/set_bool__struct.hpp>
+#include <std_srvs/srv/set_bool.hpp>
 
 #include "visibility_control.h"
 
@@ -92,6 +96,7 @@ public:
   // to subscribe
   std::unique_ptr<VariableWatcher<geometry_msgs::msg::Twist>> target_vel_watcher_;
   std::unique_ptr<VariableWatcher<geometry_msgs::msg::Vector3>> camera_angle_watcher_;
+  std::unique_ptr<VariableWatcher<bool>> fire_command_watcher_;
 
 private:
   void read_callback();
@@ -113,6 +118,8 @@ private:
 
   // rclcpp_lifecycle::LifecyclePublisher<geometry_msgs::msg::Twist>::SharedPtr current_vel_pub_;
   rclcpp_lifecycle::LifecyclePublisher<std_msgs::msg::Int64>::SharedPtr ammo_pub_;
+
+  rclcpp::Service<std_srvs::srv::SetBool>::SharedPtr fire_command_service_;
 };
 
 

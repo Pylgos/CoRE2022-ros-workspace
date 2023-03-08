@@ -18,8 +18,6 @@
 
 using namespace std;
 using namespace std::chrono;
-using rclcpp::Duration;
-using rclcpp::Time;
 using geometry_msgs::msg::Twist;
 using geometry_msgs::msg::Vector3;
 using std_msgs::msg::Int64;
@@ -35,6 +33,7 @@ public:
     // to write
     declare_parameter("target_vel_can_id", 20);
     declare_parameter("camera_angle_can_id", 21);
+    declare_parameter("fire_command_can_id", 23);
 
     // to read
     declare_parameter("launcher_info_can_id", 22);
@@ -169,6 +168,27 @@ public:
       }
     }
 
+    if (fire_command_watcher_->has_changed_or_timeout()) {
+      fire_command_watcher_->reset_timeout();
+      fire_command_watcher_->reset_changed_flag();
+
+      struct can_frame frame;
+      frame.can_id = get_parameter("fire_command_can_id").as_int();
+      frame.len = sizeof(FireCommandMsg);
+      
+      FireCommandMsg msg;
+      msg.enable = fire_command_watcher_->get_value();
+      memcpy(frame.data, &msg, sizeof(msg));
+
+      int ret = write(sock_, &frame, sizeof(frame));
+      if (ret == -1) {
+        if (errno != EAGAIN) {
+          RCLCPP_ERROR(get_logger(), "write error: %s", strerror(errno));
+          return false;
+        }
+      }
+    }
+
     return true;
   }
 
@@ -193,6 +213,10 @@ private:
 
   struct LauncherInfoMsg {
     uint8_t ammo; // 残弾数
+  } __attribute__((packed));
+
+  struct FireCommandMsg {
+    bool enable; // 発射を行うかどうか trueなら発射する
   } __attribute__((packed));
 };
 
