@@ -80,6 +80,7 @@ CallbackReturn ProxyBase::on_configure(const State&) {
 
     expand_camera_has_triggered_ = false;
     expand_camera_srv_ = create_service<Trigger>("expand_camera", [this](const Trigger::Request::ConstSharedPtr req, const Trigger::Response::SharedPtr res){
+      (void)req;
       expand_camera_has_triggered_ = true;
       res->success = true;
     });
