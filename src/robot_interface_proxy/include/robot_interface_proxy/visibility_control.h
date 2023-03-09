@@ -62,4 +62,4 @@ extern "C" {
 }
 #endif
 
-#endif  // ROBOT_INTERFACE_PROXY__VISIBILITY_H_
+#endif // ROBOT_INTERFACE_PROXY__VISIBILITY_H_
