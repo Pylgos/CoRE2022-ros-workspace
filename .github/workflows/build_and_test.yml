@@ -12,6 +12,5 @@ jobs:
       with:
         name: ros2nix
         skipPush: true
-    - run: nix develop
-    - run: colcon build
-    - run: concon test
+    - run: nix develop --command colcon build
+    - run: nix develop --command concon test
