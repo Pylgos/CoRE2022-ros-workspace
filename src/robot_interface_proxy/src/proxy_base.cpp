@@ -109,7 +109,7 @@ CallbackReturn ProxyBase::on_configure(const State &) {
     arm_grabber_command_watcher_ =
         std::make_unique<VariableWatcher<double>>(100ms, get_clock());
     arm_grabber_command_sub_ = create_subscription<Float64>(
-        "arm_lift_cmd", SystemDefaultsQoS(),
+        "arm_grabber_cmd", SystemDefaultsQoS(),
         [this](const Float64::ConstSharedPtr msg) {
           arm_grabber_command_watcher_->feed(msg->data);
         });
