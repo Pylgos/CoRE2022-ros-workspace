@@ -1,0 +1,17 @@
+name: build and test
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - uses: cachix/install-nix-action@v20
+    - uses: cachix/cachix-action@v12
+      with:
+        name: ros2nix
+        skipPush: true
+    - run: nix develop
+    - run: colcon build
+    - run: concon test
