@@ -10,3 +10,7 @@
 * `cd CoRE2023-team-b-ros-workspace`
 * `nix develop`で開発環境に入る
 * `colcon build`でビルドを行う
+
+
+## Note
+メインマイコンとの通信プロトコルは[robot_interface_proxyのREADME.md](./src/robot_interface_proxy/README.md)にあります

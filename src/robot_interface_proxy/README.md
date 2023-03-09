@@ -9,6 +9,12 @@ ROSとマイコン間の通信を中継するためのパッケージ
 - `geometry_msgs/Twist target_vel`
 - `geometry_msgs/Vector3 camera_angle`
 `x`, `y`, `z` がそれぞれ `roll`, `pitch`, `yaw` に対応する。
+- `std_msgs/Float64 arm_lift_cmd`
+- `std_msgs/Float64 arm_grabber_cmd`
+
+#### Service
+- `std_srvs/SetBool set_fire_command`
+- `std_srvs/Trigger expand_camera`
 
 
 #### Parameters
@@ -20,6 +26,9 @@ ROSとマイコン間の通信を中継するためのパッケージ
 - `int target_vel_can_id`
 - `int camera_angle_can_id`
 - `int launcher_info_can_id`
+- `int fire_command_can_id`
+- `int expand_camera_can_id`
+- `int arm_control_can_id`
 
 
 ## Hardware Interfaces
