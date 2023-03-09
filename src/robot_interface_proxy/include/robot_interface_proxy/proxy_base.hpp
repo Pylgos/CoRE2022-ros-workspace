@@ -114,14 +114,9 @@ private:
   rclcpp::TimerBase::SharedPtr read_timer_, write_timer_;
 
   rclcpp::Subscription<geometry_msgs::msg::Twist>::SharedPtr target_vel_sub_;
-  // geometry_msgs::msg::Twist target_vel_;
-  // rclcpp::Time time_last_target_vel_received_;
-  // bool is_target_vel_expired_ = true;
 
   rclcpp::Subscription<geometry_msgs::msg::Vector3>::SharedPtr camera_angle_sub_;
-  // geometry_msgs::msg::Vector3 camera_angle_;
-
-  // rclcpp_lifecycle::LifecyclePublisher<geometry_msgs::msg::Twist>::SharedPtr current_vel_pub_;
+  
   rclcpp_lifecycle::LifecyclePublisher<std_msgs::msg::Int64>::SharedPtr ammo_pub_;
 
   rclcpp::Service<std_srvs::srv::SetBool>::SharedPtr fire_command_srv_;

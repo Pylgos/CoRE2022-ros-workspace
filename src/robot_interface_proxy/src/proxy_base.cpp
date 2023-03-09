@@ -66,7 +66,6 @@ CallbackReturn ProxyBase::on_configure(const State&) {
       camera_angle_watcher_->feed(camera_angle);
     });
 
-    // current_vel_pub_ = create_publisher<Twist>("current_vel", SensorDataQoS());
     ammo_pub_ = create_publisher<Int64>("ammo", SystemDefaultsQoS().reliable().transient_local());
 
     auto read_period = microseconds(static_cast<int64_t>(1e6 / get_parameter("read_rate").as_double()));
@@ -139,7 +138,6 @@ CallbackReturn ProxyBase::on_cleanup(const State&) {
   
   target_vel_sub_ = nullptr;
   camera_angle_sub_ = nullptr;
-  // current_vel_pub_ = nullptr;
   ammo_pub_ = nullptr;
   read_timer_ = nullptr;
   write_timer_ = nullptr;
