@@ -136,11 +136,16 @@ CallbackReturn ProxyBase::on_cleanup(const State&) {
   is_activated_ = false;
   bool success = cleanup_interface();
   
+  last_target_vel_received_.reset();
+  read_timer_ = nullptr;
+  write_timer_ = nullptr;
   target_vel_sub_ = nullptr;
   camera_angle_sub_ = nullptr;
   ammo_pub_ = nullptr;
-  read_timer_ = nullptr;
-  write_timer_ = nullptr;
+  fire_command_srv_ = nullptr;
+  expand_camera_srv_ = nullptr;
+  arm_lift_command_sub_ = nullptr;
+  arm_grabber_command_sub_ = nullptr;
   
   if (success) {
     RCLCPP_INFO(get_logger(), "cleanup success");
