@@ -1,8 +1,6 @@
 #include "robot_interface_proxy/proxy_base.hpp"
-#include <geometry_msgs/msg/detail/vector3__struct.hpp>
 #include <memory>
 #include <rclcpp/qos.hpp>
-#include <std_srvs/srv/detail/set_bool__struct.hpp>
 
 
 using namespace std;
@@ -15,6 +13,7 @@ using geometry_msgs::msg::Twist;
 using geometry_msgs::msg::Vector3;
 using std_msgs::msg::Int64;
 using std_srvs::srv::SetBool;
+using std_srvs::srv::Trigger;
 
 
 namespace robot_interface_proxy {
@@ -74,8 +73,14 @@ CallbackReturn ProxyBase::on_configure(const State&) {
     auto write_period = microseconds(static_cast<int64_t>(1e6 / get_parameter("write_rate").as_double()));
     write_timer_ = create_wall_timer(write_period, bind(&ProxyBase::write_callback, this));
 
-    fire_command_service_ = create_service<SetBool>("set_fire", [this](const SetBool::Request::ConstSharedPtr req, const SetBool::Response::SharedPtr res) {
+    fire_command_srv_ = create_service<SetBool>("set_fire_command", [this](const SetBool::Request::ConstSharedPtr req, const SetBool::Response::SharedPtr res) {
       fire_command_watcher_->feed(req->data);
+      res->success = true;
+    });
+
+    expand_camera_has_triggered_ = false;
+    expand_camera_srv_ = create_service<Trigger>("expand_camera", [this](const Trigger::Request::ConstSharedPtr req, const Trigger::Response::SharedPtr res){
+      expand_camera_has_triggered_ = true;
       res->success = true;
     });
 

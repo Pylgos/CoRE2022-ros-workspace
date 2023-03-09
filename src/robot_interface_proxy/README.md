@@ -57,6 +57,14 @@ struct FireCommandMsg {
 } __attribute__((packed));
 ```
 
+* ID: 24 expand_camera
+```c++
+struct ExpandCameraMsg {
+  // 空 (長さ0のメッセージ)
+  // このメッセージを受信したとき、カメラを展開する
+};
+```
+
 ### マイコンからPCに送信するメッセージ
 * ID: 22 launcher_info  
 発射・装填機構の情報を表すメッセージ

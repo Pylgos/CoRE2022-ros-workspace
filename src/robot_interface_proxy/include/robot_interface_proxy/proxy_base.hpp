@@ -8,8 +8,9 @@
 #include <geometry_msgs/msg/twist.hpp>
 #include <geometry_msgs/msg/vector3.hpp>
 #include <std_msgs/msg/int64.hpp>
-#include <std_srvs/srv/detail/set_bool__struct.hpp>
 #include <std_srvs/srv/set_bool.hpp>
+#include <std_srvs/srv/trigger.hpp>
+#include <std_msgs/msg/float64.hpp>
 
 #include "visibility_control.h"
 
@@ -98,6 +99,8 @@ public:
   std::unique_ptr<VariableWatcher<geometry_msgs::msg::Vector3>> camera_angle_watcher_;
   std::unique_ptr<VariableWatcher<bool>> fire_command_watcher_;
 
+  bool expand_camera_has_triggered_;
+
 private:
   void read_callback();
   void write_callback();
@@ -119,7 +122,9 @@ private:
   // rclcpp_lifecycle::LifecyclePublisher<geometry_msgs::msg::Twist>::SharedPtr current_vel_pub_;
   rclcpp_lifecycle::LifecyclePublisher<std_msgs::msg::Int64>::SharedPtr ammo_pub_;
 
-  rclcpp::Service<std_srvs::srv::SetBool>::SharedPtr fire_command_service_;
+  rclcpp::Service<std_srvs::srv::SetBool>::SharedPtr fire_command_srv_;
+
+  rclcpp::Service<std_srvs::srv::Trigger>::SharedPtr expand_camera_srv_;
 };
 
 

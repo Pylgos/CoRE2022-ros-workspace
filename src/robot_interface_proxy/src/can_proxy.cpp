@@ -34,6 +34,7 @@ public:
     declare_parameter("target_vel_can_id", 20);
     declare_parameter("camera_angle_can_id", 21);
     declare_parameter("fire_command_can_id", 23);
+    declare_parameter("expand_camera_can_id", 24);
 
     // to read
     declare_parameter("launcher_info_can_id", 22);
@@ -180,6 +181,20 @@ public:
       msg.enable = fire_command_watcher_->get_value();
       memcpy(frame.data, &msg, sizeof(msg));
 
+      int ret = write(sock_, &frame, sizeof(frame));
+      if (ret == -1) {
+        if (errno != EAGAIN) {
+          RCLCPP_ERROR(get_logger(), "write error: %s", strerror(errno));
+          return false;
+        }
+      }
+    }
+
+    if (expand_camera_has_triggered_) {
+      expand_camera_has_triggered_ = false;
+      struct can_frame frame;
+      frame.can_id = get_parameter("expand_camera_can_id").as_int();
+      frame.len = 0;
       int ret = write(sock_, &frame, sizeof(frame));
       if (ret == -1) {
         if (errno != EAGAIN) {
