@@ -248,8 +248,8 @@ private:
   } __attribute__((packed));
 
   struct ArmControlMsg {
-    int16_t lift_command;
-    int16_t grabber_command;
+    int16_t lift_command; // 旗回収機構の上下展開 上が+　下が-　リミットスイッチにあったたら止める
+    int16_t grabber_command; // 旗回収の掴む機構　そのままモータの出力に渡す
   } __attribute__((packed));
 };
 
