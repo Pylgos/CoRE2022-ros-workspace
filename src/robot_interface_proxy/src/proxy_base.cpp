@@ -1,6 +1,7 @@
 #include "robot_interface_proxy/proxy_base.hpp"
 #include <memory>
 #include <rclcpp/qos.hpp>
+#include <std_msgs/msg/detail/float64__struct.hpp>
 
 
 using namespace std;
@@ -14,6 +15,7 @@ using geometry_msgs::msg::Vector3;
 using std_msgs::msg::Int64;
 using std_srvs::srv::SetBool;
 using std_srvs::srv::Trigger;
+using std_msgs::msg::Float64;
 
 
 namespace robot_interface_proxy {
@@ -83,6 +85,16 @@ CallbackReturn ProxyBase::on_configure(const State&) {
       (void)req;
       expand_camera_has_triggered_ = true;
       res->success = true;
+    });
+
+    arm_lift_command_watcher_ = std::make_unique<VariableWatcher<double>>(100ms, get_clock());
+    arm_lift_command_sub_ = create_subscription<Float64>("arm_lift_cmd", SystemDefaultsQoS(), [this](const Float64::ConstSharedPtr msg){
+      arm_lift_command_watcher_->feed(msg->data);
+    });
+
+    arm_grabber_command_watcher_ = std::make_unique<VariableWatcher<double>>(100ms, get_clock());
+    arm_grabber_command_sub_ = create_subscription<Float64>("arm_lift_cmd", SystemDefaultsQoS(), [this](const Float64::ConstSharedPtr msg){
+      arm_grabber_command_watcher_->feed(msg->data);
     });
 
     RCLCPP_INFO(get_logger(), "configuration success");

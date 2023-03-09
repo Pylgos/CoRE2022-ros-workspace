@@ -37,7 +37,7 @@ struct TargetVelocityMsg {
   int16_t vy; //　左右方向の速度[m/s] * 1000 左が+ 右が-
   int16_t ang_vel; // 回転速度[rad/s] * 1000 左旋回が+ 右旋回が-
 } __attribute__((packed));
-// 例: 前に1[m/s]、右に1[m/s]、右旋回1[rad/s]とき、vx==1000, vy==-1000, ang_vel==-1000
+// 例: 前に1[m/s]、右に1[m/s]、右旋回1[rad/s]とき、vx == 1000, vy == -1000, ang_vel == -1000
 ```
 
 * ID: 21 camera_angle  
@@ -64,6 +64,15 @@ struct ExpandCameraMsg {
   // このメッセージを受信したとき、カメラを展開する
 };
 ```
+
+* ID: 25 arm_control
+``` c++
+struct ArmControlMsg {
+  int16_t lift_command;
+  int16_t grabber_command;
+} __attribute__((packed));
+```
+
 
 ### マイコンからPCに送信するメッセージ
 * ID: 22 launcher_info  
