@@ -161,6 +161,13 @@ CallbackReturn ProxyBase::on_cleanup(const State &) {
   arm_lift_command_sub_ = nullptr;
   arm_grabber_command_sub_ = nullptr;
 
+  target_vel_watcher_ = nullptr;
+  camera_angle_watcher_ = nullptr;
+  fire_command_watcher_ = nullptr;
+  camera_lift_command_watcher_ = nullptr;
+  arm_lift_command_watcher_ = nullptr;
+  arm_grabber_command_watcher_ = nullptr;
+
   if (success) {
     RCLCPP_INFO(get_logger(), "cleanup success");
     return CallbackReturn::SUCCESS;
