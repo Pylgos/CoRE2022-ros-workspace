@@ -9,7 +9,6 @@
 #include <geometry_msgs/msg/vector3.hpp>
 #include <std_msgs/msg/int64.hpp>
 #include <std_srvs/srv/set_bool.hpp>
-#include <std_srvs/srv/trigger.hpp>
 #include <std_msgs/msg/float64.hpp>
 
 #include "visibility_control.h"
@@ -98,6 +97,7 @@ public:
   std::unique_ptr<VariableWatcher<geometry_msgs::msg::Twist>> target_vel_watcher_;
   std::unique_ptr<VariableWatcher<geometry_msgs::msg::Vector3>> camera_angle_watcher_;
   std::unique_ptr<VariableWatcher<bool>> fire_command_watcher_;
+  std::unique_ptr<VariableWatcher<double>> camera_lift_command_watcher_;
   std::unique_ptr<VariableWatcher<double>> arm_lift_command_watcher_;
   std::unique_ptr<VariableWatcher<double>> arm_grabber_command_watcher_;
 
@@ -121,7 +121,7 @@ private:
 
   rclcpp::Service<std_srvs::srv::SetBool>::SharedPtr fire_command_srv_;
 
-  rclcpp::Service<std_srvs::srv::Trigger>::SharedPtr expand_camera_srv_;
+  rclcpp::Subscription<std_msgs::msg::Float64>::SharedPtr camera_lift_command_sub_;
 
   rclcpp::Subscription<std_msgs::msg::Float64>::SharedPtr arm_lift_command_sub_;
 

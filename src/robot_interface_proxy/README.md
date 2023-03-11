@@ -66,12 +66,11 @@ struct FireCommandMsg {
 } __attribute__((packed));
 ```
 
-* ID: 24 expand_camera
+* ID: 24 camera_lift_control
 ```c++
-struct ExpandCameraMsg {
-  // 空 (長さ0のメッセージ)
-  // このメッセージを受信したとき、カメラを展開する
-};
+struct CameraLiftMsg {
+  int16_t command; // カメラ展開機構の上下　上が+ 下が-
+} __attribute__((packed));
 ```
 
 * ID: 25 arm_control

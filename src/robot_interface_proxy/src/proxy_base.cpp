@@ -14,7 +14,6 @@ using rclcpp::SystemDefaultsQoS;
 using std_msgs::msg::Float64;
 using std_msgs::msg::Int64;
 using std_srvs::srv::SetBool;
-using std_srvs::srv::Trigger;
 
 namespace robot_interface_proxy {
 
@@ -89,14 +88,11 @@ CallbackReturn ProxyBase::on_configure(const State &) {
           res->success = true;
         });
 
-    expand_camera_has_triggered_ = false;
-    expand_camera_srv_ = create_service<Trigger>(
-        "expand_camera", [this](const Trigger::Request::ConstSharedPtr req,
-                                const Trigger::Response::SharedPtr res) {
-          (void)req;
-          expand_camera_has_triggered_ = true;
-          res->success = true;
-        });
+    camera_lift_command_watcher_ =
+        std::make_unique<VariableWatcher<double>>(100ms, get_clock());
+    camera_lift_command_sub_ = create_subscription<Float64>("camera_lift_command", rclcpp::SystemDefaultsQoS(), [this](const Float64::ConstSharedPtr msg) {
+      camera_lift_command_watcher_->feed(msg->data);
+    });
 
     arm_lift_command_watcher_ =
         std::make_unique<VariableWatcher<double>>(100ms, get_clock());
@@ -161,7 +157,7 @@ CallbackReturn ProxyBase::on_cleanup(const State &) {
   camera_angle_sub_ = nullptr;
   ammo_pub_ = nullptr;
   fire_command_srv_ = nullptr;
-  expand_camera_srv_ = nullptr;
+  camera_lift_command_sub_ = nullptr;
   arm_lift_command_sub_ = nullptr;
   arm_grabber_command_sub_ = nullptr;
 

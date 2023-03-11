@@ -31,7 +31,7 @@ public:
     declare_parameter("target_vel_can_id", 20);
     declare_parameter("camera_angle_can_id", 21);
     declare_parameter("fire_command_can_id", 23);
-    declare_parameter("expand_camera_can_id", 24);
+    declare_parameter("camera_lift_can_id", 24);
     declare_parameter("arm_control_can_id", 25);
 
     // to read
@@ -203,18 +203,15 @@ public:
         return false;
     }
 
-    if (expand_camera_has_triggered_) {
-      expand_camera_has_triggered_ = false;
-      struct can_frame frame;
-      frame.can_id = get_parameter("expand_camera_can_id").as_int();
-      frame.len = 0;
-      int ret = write(sock_, &frame, sizeof(frame));
-      if (ret == -1) {
-        if (errno != EAGAIN) {
-          RCLCPP_ERROR(get_logger(), "write error: %s", strerror(errno));
-          return false;
-        }
-      }
+    if (camera_lift_command_watcher_->has_changed_or_timeout()) {
+      camera_lift_command_watcher_->reset_timeout();
+      camera_lift_command_watcher_->reset_changed_flag();
+
+      CameraLiftMsg msg;
+      msg.command = camera_lift_command_watcher_->get_value() * 1000;
+
+      if (!write_struct(msg, "camera_lift_can_id"))
+        return false;
     }
 
     return true;
@@ -251,6 +248,10 @@ private:
     int16_t lift_command; // 旗回収機構の上下展開
                           // 上が+　下が-　リミットスイッチにあったたら止める
     int16_t grabber_command; // 旗回収の掴む機構　そのままモータの出力に渡す
+  } __attribute__((packed));
+
+  struct CameraLiftMsg {
+    int16_t command; // カメラ展開機構の上下　上が+ 下が-
   } __attribute__((packed));
 };
 
