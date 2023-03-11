@@ -82,7 +82,7 @@ CallbackReturn ProxyBase::on_configure(const State &) {
         create_wall_timer(write_period, bind(&ProxyBase::write_callback, this));
 
     fire_command_srv_ = create_service<SetBool>(
-        "set_fire_command", [this](const SetBool::Request::ConstSharedPtr req,
+        "set_fire_cmd", [this](const SetBool::Request::ConstSharedPtr req,
                                    const SetBool::Response::SharedPtr res) {
           fire_command_watcher_->feed(req->data);
           res->success = true;
@@ -90,7 +90,7 @@ CallbackReturn ProxyBase::on_configure(const State &) {
 
     camera_lift_command_watcher_ =
         std::make_unique<VariableWatcher<double>>(100ms, get_clock());
-    camera_lift_command_sub_ = create_subscription<Float64>("camera_lift_command", rclcpp::SystemDefaultsQoS(), [this](const Float64::ConstSharedPtr msg) {
+    camera_lift_command_sub_ = create_subscription<Float64>("camera_lift_cmd", rclcpp::SystemDefaultsQoS(), [this](const Float64::ConstSharedPtr msg) {
       camera_lift_command_watcher_->feed(msg->data);
     });
 
