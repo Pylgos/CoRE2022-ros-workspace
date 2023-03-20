@@ -5,7 +5,7 @@ ROSとマイコン間の通信を中継するためのパッケージ
 #### Publish
 - `std_msgs/Int64 ammo`
 
-#### Subscribe
+<!-- #### Subscribe
 - `geometry_msgs/Twist target_vel`
 - `geometry_msgs/Vector3 camera_angle`
 `x`, `y`, `z` がそれぞれ `roll`, `pitch`, `yaw` に対応する。
@@ -14,13 +14,13 @@ ROSとマイコン間の通信を中継するためのパッケージ
 
 #### Service
 - `std_srvs/SetBool set_fire_command`
-- `std_srvs/Trigger expand_camera`
+- `std_srvs/Trigger expand_camera` -->
 
 
 #### Parameters
 ##### CANProxy node
 - `double read_rate`
-- `double write_rate`
+<!-- - `double write_rate`
 - `double target_vel_expire_duration`
 - `string can_interface`
 - `int target_vel_can_id`
@@ -28,7 +28,7 @@ ROSとマイコン間の通信を中継するためのパッケージ
 - `int launcher_info_can_id`
 - `int fire_command_can_id`
 - `int expand_camera_can_id`
-- `int arm_control_can_id`
+- `int arm_control_can_id` -->
 
 
 ## Hardware Interfaces
@@ -38,7 +38,7 @@ ROSとマイコン間の通信を中継するためのパッケージ
 `target_velocity`はマイコンが直接コントローラと通信する（ROSを経由して操作しない）場合、無視する。
 
 ### PCからマイコンに送信するメッセージ
-* ID: 20 target_velocity  
+<!-- * ID: 20 target_velocity  
 ロボットの移動する目標速度を表すメッセージ  
 ```c++
 struct TargetVelocityMsg {
@@ -79,7 +79,7 @@ struct ArmControlMsg {
   int16_t lift_command; // 旗回収機構の上下展開 上が+　下が-　リミットスイッチにあったたら止める
   int16_t grabber_command; // 旗回収の掴む機構　そのままモータの出力に渡す
 } __attribute__((packed));
-```
+``` -->
 
 
 ### マイコンからPCに送信するメッセージ

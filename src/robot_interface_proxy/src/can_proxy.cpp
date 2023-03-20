@@ -28,11 +28,11 @@ public:
     declare_parameter("can_interface", "can0");
 
     // to write
-    declare_parameter("target_vel_can_id", 20);
-    declare_parameter("camera_angle_can_id", 21);
-    declare_parameter("fire_command_can_id", 23);
-    declare_parameter("camera_lift_can_id", 24);
-    declare_parameter("arm_control_can_id", 25);
+    // declare_parameter("target_vel_can_id", 20);
+    // declare_parameter("camera_angle_can_id", 21);
+    // declare_parameter("fire_command_can_id", 23);
+    // declare_parameter("camera_lift_can_id", 24);
+    // declare_parameter("arm_control_can_id", 25);
 
     // to read
     declare_parameter("launcher_info_can_id", 22);
@@ -128,91 +128,91 @@ public:
     return true;
   };
 
-  template <class T> bool write_struct(const T &data, canid_t id) {
-    static_assert(sizeof(data) <= 8);
+  // template <class T> bool write_struct(const T &data, canid_t id) {
+  //   static_assert(sizeof(data) <= 8);
 
-    struct can_frame frame;
-    frame.can_id = id;
-    frame.len = sizeof(T);
-    memcpy(frame.data, &data, sizeof(data));
-    int ret = write(sock_, &frame, sizeof(frame));
-    if (ret == -1) {
-      if (errno != EAGAIN) {
-        RCLCPP_ERROR(get_logger(), "write error: %s", strerror(errno));
-        return false;
-      }
-    }
-    return true;
-  }
+  //   struct can_frame frame;
+  //   frame.can_id = id;
+  //   frame.len = sizeof(T);
+  //   memcpy(frame.data, &data, sizeof(data));
+  //   int ret = write(sock_, &frame, sizeof(frame));
+  //   if (ret == -1) {
+  //     if (errno != EAGAIN) {
+  //       RCLCPP_ERROR(get_logger(), "write error: %s", strerror(errno));
+  //       return false;
+  //     }
+  //   }
+  //   return true;
+  // }
 
-  template <class T>
-  bool write_struct(const T &data, string can_id_param_name) {
-    return write_struct(data, get_parameter(can_id_param_name).as_int());
-  }
+  // template <class T>
+  // bool write_struct(const T &data, string can_id_param_name) {
+  //   return write_struct(data, get_parameter(can_id_param_name).as_int());
+  // }
 
   bool write_interface() override {
-    if (target_vel_watcher_->has_changed_or_timeout()) {
-      target_vel_watcher_->reset_timeout();
-      target_vel_watcher_->reset_changed_flag();
+    // if (target_vel_watcher_->has_changed_or_timeout()) {
+    //   target_vel_watcher_->reset_timeout();
+    //   target_vel_watcher_->reset_changed_flag();
 
-      const Twist twist = target_vel_watcher_->get_value();
-      TargetVelocityMsg msg;
-      msg.vx = twist.linear.x * 1000;
-      msg.vy = twist.linear.y * 1000;
-      msg.ang_vel = twist.angular.z * 1000;
+    //   const Twist twist = target_vel_watcher_->get_value();
+    //   TargetVelocityMsg msg;
+    //   msg.vx = twist.linear.x * 1000;
+    //   msg.vy = twist.linear.y * 1000;
+    //   msg.ang_vel = twist.angular.z * 1000;
 
-      if (!write_struct(msg, "target_vel_can_id"))
-        return false;
-    }
+    //   if (!write_struct(msg, "target_vel_can_id"))
+    //     return false;
+    // }
 
-    if (camera_angle_watcher_->has_changed_or_timeout()) {
-      camera_angle_watcher_->reset_timeout();
-      camera_angle_watcher_->reset_changed_flag();
+    // if (camera_angle_watcher_->has_changed_or_timeout()) {
+    //   camera_angle_watcher_->reset_timeout();
+    //   camera_angle_watcher_->reset_changed_flag();
 
-      const Vector3 angle = camera_angle_watcher_->get_value();
-      CameraAngleMsg msg;
-      msg.pitch = angle.y * 1000;
-      msg.yaw = angle.z * 1000;
+    //   const Vector3 angle = camera_angle_watcher_->get_value();
+    //   CameraAngleMsg msg;
+    //   msg.pitch = angle.y * 1000;
+    //   msg.yaw = angle.z * 1000;
 
-      if (!write_struct(msg, "camera_angle_can_id"))
-        return false;
-    }
+    //   if (!write_struct(msg, "camera_angle_can_id"))
+    //     return false;
+    // }
 
-    if (fire_command_watcher_->has_changed_or_timeout()) {
-      fire_command_watcher_->reset_timeout();
-      fire_command_watcher_->reset_changed_flag();
+    // if (fire_command_watcher_->has_changed_or_timeout()) {
+    //   fire_command_watcher_->reset_timeout();
+    //   fire_command_watcher_->reset_changed_flag();
 
-      FireCommandMsg msg;
-      msg.enable = fire_command_watcher_->get_value();
-      if (!write_struct(msg, "fire_command_can_id"))
-        return false;
-    }
+    //   FireCommandMsg msg;
+    //   msg.enable = fire_command_watcher_->get_value();
+    //   if (!write_struct(msg, "fire_command_can_id"))
+    //     return false;
+    // }
 
-    if (arm_grabber_command_watcher_->has_changed_or_timeout() ||
-        arm_lift_command_watcher_->has_changed_or_timeout()) {
-      arm_grabber_command_watcher_->reset_timeout();
-      arm_grabber_command_watcher_->reset_changed_flag();
-      arm_lift_command_watcher_->reset_timeout();
-      arm_lift_command_watcher_->reset_changed_flag();
+    // if (arm_grabber_command_watcher_->has_changed_or_timeout() ||
+    //     arm_lift_command_watcher_->has_changed_or_timeout()) {
+    //   arm_grabber_command_watcher_->reset_timeout();
+    //   arm_grabber_command_watcher_->reset_changed_flag();
+    //   arm_lift_command_watcher_->reset_timeout();
+    //   arm_lift_command_watcher_->reset_changed_flag();
 
-      ArmControlMsg msg;
-      msg.grabber_command = arm_grabber_command_watcher_->get_value() * 1000;
-      msg.lift_command = arm_lift_command_watcher_->get_value() * 1000;
+    //   ArmControlMsg msg;
+    //   msg.grabber_command = arm_grabber_command_watcher_->get_value() * 1000;
+    //   msg.lift_command = arm_lift_command_watcher_->get_value() * 1000;
 
-      if (!write_struct(msg, "arm_control_can_id"))
-        return false;
-    }
+    //   if (!write_struct(msg, "arm_control_can_id"))
+    //     return false;
+    // }
 
-    if (camera_lift_command_watcher_->has_changed_or_timeout()) {
-      camera_lift_command_watcher_->reset_timeout();
-      camera_lift_command_watcher_->reset_changed_flag();
+    // if (camera_lift_command_watcher_->has_changed_or_timeout()) {
+    //   camera_lift_command_watcher_->reset_timeout();
+    //   camera_lift_command_watcher_->reset_changed_flag();
 
-      CameraLiftMsg msg;
-      msg.command = camera_lift_command_watcher_->get_value() * 1000;
+    //   CameraLiftMsg msg;
+    //   msg.command = camera_lift_command_watcher_->get_value() * 1000;
 
-      if (!write_struct(msg, "camera_lift_can_id"))
-        return false;
-    }
+    //   if (!write_struct(msg, "camera_lift_can_id"))
+    //     return false;
+    // }
 
     return true;
   }
@@ -225,34 +225,34 @@ public:
 private:
   int sock_;
 
-  struct TargetVelocityMsg {
-    int16_t vx;      // 前後方向の速度[m/s] * 1000 前が+　後ろが-
-    int16_t vy;      // 　左右方向の速度[m/s] * 1000 左が+ 右が-
-    int16_t ang_vel; // 回転速度[rad/s] * 1000 左旋回が+ 右旋回が-
-  } __attribute__((packed));
+  // struct TargetVelocityMsg {
+  //   int16_t vx;      // 前後方向の速度[m/s] * 1000 前が+　後ろが-
+  //   int16_t vy;      // 　左右方向の速度[m/s] * 1000 左が+ 右が-
+  //   int16_t ang_vel; // 回転速度[rad/s] * 1000 左旋回が+ 右旋回が-
+  // } __attribute__((packed));
 
-  struct CameraAngleMsg {
-    int16_t pitch; // 上下方向の角度[rad] * 1000 上が-　下が+
-    int16_t yaw;   // 左右方向の角度[rad] * 1000 左が+ 右が-
-  } __attribute__((packed));
+  // struct CameraAngleMsg {
+  //   int16_t pitch; // 上下方向の角度[rad] * 1000 上が-　下が+
+  //   int16_t yaw;   // 左右方向の角度[rad] * 1000 左が+ 右が-
+  // } __attribute__((packed));
 
   struct LauncherInfoMsg {
     uint8_t ammo; // 残弾数
   } __attribute__((packed));
 
-  struct FireCommandMsg {
-    bool enable; // 発射を行うかどうか trueなら発射する
-  } __attribute__((packed));
+  // struct FireCommandMsg {
+  //   bool enable; // 発射を行うかどうか trueなら発射する
+  // } __attribute__((packed));
 
-  struct ArmControlMsg {
-    int16_t lift_command; // 旗回収機構の上下展開
-                          // 上が+　下が-　リミットスイッチにあったたら止める
-    int16_t grabber_command; // 旗回収の掴む機構　そのままモータの出力に渡す
-  } __attribute__((packed));
+  // struct ArmControlMsg {
+  //   int16_t lift_command; // 旗回収機構の上下展開
+  //                         // 上が+　下が-　リミットスイッチにあったたら止める
+  //   int16_t grabber_command; // 旗回収の掴む機構　そのままモータの出力に渡す
+  // } __attribute__((packed));
 
-  struct CameraLiftMsg {
-    int16_t command; // カメラ展開機構の上下　上が+ 下が-
-  } __attribute__((packed));
+  // struct CameraLiftMsg {
+  //   int16_t command; // カメラ展開機構の上下　上が+ 下が-
+  // } __attribute__((packed));
 };
 
 } // namespace robot_interface_proxy

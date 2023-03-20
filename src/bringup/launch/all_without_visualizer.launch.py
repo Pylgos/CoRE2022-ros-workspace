@@ -43,5 +43,12 @@ def generate_launch_description():
             name="can_proxy",
             parameters=[
             ]
-        )
+        ),
+        Node(
+            package="joy2can",
+            executable="joy2can",
+            name="joy2can",
+            parameters=[
+            ]
+        ),
     ])
