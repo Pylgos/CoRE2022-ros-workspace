@@ -1,5 +1,6 @@
 # robot_interface_proxy
 ROSとマイコン間の通信を中継するためのパッケージ
+通信の大半はこのパッケージではなく[joy2can](../joy2can/README.md)によって行われる。
 
 ## ROS Interfaces
 #### Publish
