@@ -124,13 +124,14 @@ public:
     if (joy_msg_ == nullptr) return true;
     
     JoyMsg joy;
+    memset(&joy, 0, sizeof(joy));
     if (joy_msg_->axes.size() >= 6) {
       joy.left_stick_x = joy_msg_->axes.at(0) * 127;
       joy.left_stick_y = joy_msg_->axes.at(1) * 127;
       joy.right_stick_x = joy_msg_->axes.at(2) * 127;
       joy.right_stick_y = joy_msg_->axes.at(3) * 127;
-      joy.l2 = joy_msg_->axes.at(4) / -2.0 + 0.5;
-      joy.r2 = joy_msg_->axes.at(5) / -2.0 + 0.5;
+      joy.l2 = (0.5 - joy_msg_->axes.at(4) / 2) * 255;
+      joy.r2 = (0.5 - joy_msg_->axes.at(5) / 2) * 255;
     }
 
     for (size_t i = 0; i < min(8UL, joy_msg_->buttons.size()); i++) {
