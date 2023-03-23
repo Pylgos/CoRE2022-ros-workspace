@@ -47,6 +47,7 @@ int main(const int argc, const char **argv) {
       "enable_aps", [&enabled](const SetBool::Request::ConstSharedPtr req,
                                const SetBool::Response::SharedPtr resp) {
         enabled = req->data;
+        resp->success = true;
       });
 
   ServoDriver sv("can0", 25);

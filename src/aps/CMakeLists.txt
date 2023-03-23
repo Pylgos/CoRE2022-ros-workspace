@@ -21,5 +21,6 @@ ament_auto_add_executable(${PROJECT_NAME}
 
 target_link_libraries(${PROJECT_NAME} ${LIBREALSENSE_LIBRARIES})
 target_include_directories(${PROJECT_NAME} PRIVATE ${LIBREALSENSE_INCLUDE_DIRS})
+target_compile_options(${PROJECT_NAME} PRIVATE ${LIBREALSENSE_CFLAGS})
 
 ament_auto_package()
