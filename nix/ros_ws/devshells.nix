@@ -11,7 +11,7 @@ in
   default = rosPkgs.mkRosWorkspace {
     pkgs = with rosPkgs; [
       desktop
-      foxglove_bridge
+      nixpkgs.librealsense.dev
     ];
     shellHook = ''
       set +u
