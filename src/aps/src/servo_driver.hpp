@@ -41,19 +41,27 @@ public:
     ioctl(sock_, FIONBIO, &val);
   }
 
-  void write(double angle, uint8_t motor_vel) {
+  void write(double angle, int16_t motor_vel) {
     if (sock_ == -1) return;
 
     struct can_frame frame;
     frame.can_id = can_id_;
-    frame.len = 2;
-    memset(frame.data, 0, sizeof(frame.data));
-    frame.data[0] = angle / 180 * 255;
-    frame.data[1] = motor_vel;
+    frame.len = sizeof(ApsControl);
+
+    ApsControl msg;
+    msg.motor_command = angle / 180 * 255;
+    msg.servo_command = motor_vel;
+
+    memcpy(frame.data, &msg, sizeof(ApsControl));
 
     int ret = ::write(sock_, &frame, sizeof(frame));
     (void)ret;
   }
+
+  struct ApsControl {
+    int16_t motor_command; // モーターの指令値 255を掛けてモータードライバに送る
+    uint8_t servo_command; // サーボモータの指令値　サーボモータードライバで用いられるものと同じフォーマット
+  } __attribute__((packed));
 
 private:
   int sock_ = -1;

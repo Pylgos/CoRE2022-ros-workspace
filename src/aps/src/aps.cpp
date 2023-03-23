@@ -36,7 +36,7 @@ struct AxisAlignedBBox {
 
 AxisAlignedBBox bbox{rs2::vertex{-0.3, -0.3, 0.1}, rs2::vertex{0.3, 0.1, 1.0}};
 const int threshold = 100;
-const int motor_power = 127;
+const int motor_power = INT16_MAX * 0.3;
 chrono::nanoseconds trigger_duration = 500ms;
 
 int main(const int argc, const char **argv) {
