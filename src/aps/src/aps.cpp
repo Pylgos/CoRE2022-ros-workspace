@@ -50,7 +50,7 @@ int main(const int argc, const char **argv) {
         resp->success = true;
       });
 
-  ApsDriver sv("can0", 25);
+  ApsDriver sv("can0", 26);
 
   rs2::pointcloud pc;
   rs2::points points;
