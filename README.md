@@ -13,4 +13,4 @@
 
 
 ## Note
-メインマイコンとの通信プロトコルは[robot_interface_proxyのREADME](./src/robot_interface_proxy/README.md)と[joy2canのREADME](./src/joy2can/README.md)にあります
+メインマイコンとの通信プロトコルは[robot_interface_proxyのREADME](./src/robot_interface_proxy/README.md)と[joy2canのREADME](./src/joy2can/README.md)と[apsのREADME](./src/aps/README.md)にあります
