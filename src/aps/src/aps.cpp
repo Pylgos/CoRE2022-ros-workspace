@@ -8,7 +8,7 @@
 #include <std_srvs/srv/set_bool.hpp>
 #include <librealsense2/rs.hpp>
 
-#include "servo_driver.hpp"
+#include "aps_driver.hpp"
 
 using namespace std;
 using std_srvs::srv::SetBool;
@@ -50,7 +50,7 @@ int main(const int argc, const char **argv) {
         resp->success = true;
       });
 
-  ServoDriver sv("can0", 25);
+  ApsDriver sv("can0", 25);
 
   rs2::pointcloud pc;
   rs2::points points;

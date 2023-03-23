@@ -12,9 +12,9 @@
 #include <unistd.h>
 
 
-class ServoDriver {
+class ApsDriver {
 public:
-  ServoDriver(std::string name, int can_id) : can_id_(can_id) {
+  ApsDriver(std::string name, int can_id) : can_id_(can_id) {
     struct sockaddr_can addr;
     struct ifreq ifr;
 
