@@ -34,13 +34,13 @@ struct AxisAlignedBBox {
   rs2::vertex c1, c2;
 };
 
-const AxisAlignedBBox bbox{rs2::vertex{-0.3, -0.3, 0.1},
-                           rs2::vertex{0.3, 0.1, 1.0}};
+const AxisAlignedBBox bbox{rs2::vertex{-0.3, -1.0, 0.1},
+                           rs2::vertex{0.3, 0.3, 2.0}};
 const int threshold = 100;
 const int launch_power = INT16_MAX * 0.3;
 const chrono::nanoseconds fire_duration = 500ms;
-const chrono::nanoseconds reload_duration = 1s;
-const double angle_neutral = 30;
+const chrono::nanoseconds reload_duration = 500ms;
+const double angle_neutral = 25;
 const double angle_fire = 0;
 const double angle_reload = 50;
 
@@ -48,11 +48,15 @@ int main(const int argc, const char **argv) {
   rclcpp::init(argc, argv);
   const auto node = rclcpp::Node::make_shared("aps_node");
   bool enabled = false;
+  double angle = angle_neutral;
+  int power = 0;
   const auto service = node->create_service<SetBool>(
       "enable_aps", [&](const SetBool::Request::ConstSharedPtr req,
                         const SetBool::Response::SharedPtr resp) {
         enabled = req->data;
         resp->success = true;
+        if (enabled)
+          angle = angle_neutral;
         RCLCPP_INFO(node->get_logger(), "APS ENABLED: %u", enabled);
       });
 
@@ -68,8 +72,9 @@ int main(const int argc, const char **argv) {
       pipe.start();
       RCLCPP_INFO(node->get_logger(), "Pipeline started!");
 
-      double angle = angle_neutral;
-      int power = 0;
+      angle = angle_neutral;
+      power = 0;
+
       enum class State {
         READY,
         FIRE,
@@ -89,7 +94,7 @@ int main(const int argc, const char **argv) {
               bbox.num_points_inside(vertices, points.size());
 
           auto now = chrono::high_resolution_clock().now();
-          bool state_expired = state_expire_time >= now;
+          bool state_expired = state_expire_time <= now;
 
           power = launch_power;
 
@@ -118,7 +123,7 @@ int main(const int argc, const char **argv) {
           } break;
           }
         } else {
-          angle = angle_neutral;
+          angle = angle_reload;
           power = 0;
         }
 
