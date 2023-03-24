@@ -24,7 +24,7 @@ public:
     ifr.ifr_name[IFNAMSIZ - 1] = '\0';
     ifr.ifr_ifindex = if_nametoindex(ifr.ifr_name);
     if (ifr.ifr_ifindex == 0) {
-      std::cout << "can device not found" << std::endl;
+      std::cout << "CAN interface '" << name << "' not found" << std::endl;
       return;
     }
 
@@ -49,8 +49,8 @@ public:
     frame.len = sizeof(ApsControl);
 
     ApsControl msg;
-    msg.motor_command = angle / 180 * 255;
-    msg.servo_command = motor_vel;
+    msg.motor_command = motor_vel;
+    msg.servo_command = angle / 180 * 255;
 
     memcpy(frame.data, &msg, sizeof(ApsControl));
 
